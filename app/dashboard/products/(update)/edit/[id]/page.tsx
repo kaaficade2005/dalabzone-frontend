@@ -232,7 +232,7 @@ const UpdateProductPage = () => {
                 productData.append("image", formData.image);
             }
 
-            const response = await axios.post(
+            const response = await axios.put(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/products/update-product/${productId}`,
                 productData,
                 {

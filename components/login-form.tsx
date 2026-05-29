@@ -60,7 +60,9 @@ export function LoginForm({
       login(response.data.user, response.data.token);
 
 
-      toast.success(response.data.msg || "Login successful");
+      toast.success(response.data.msg || "Login successful", {
+        position: "bottom-right"
+      });
 
       router.push("/");
 
@@ -145,12 +147,12 @@ export function LoginForm({
             <label className="text-sm font-medium text-muted-foreground">
               PASSWORD
             </label>
-            <a
-              href="#"
+            <Link
+              href="/forgot-password"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               Forgot password?
-            </a>
+            </Link>
           </div>
 
           <Input

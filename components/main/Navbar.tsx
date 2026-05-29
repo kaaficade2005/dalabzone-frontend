@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import {
-    ChevronRight,
     Heart,
     Info,
     LayoutDashboard,
@@ -30,7 +29,7 @@ import {
     ShoppingBag,
     ShoppingCart,
     User,
-    User2,
+    User2
 } from "lucide-react";
 
 import { ModeToggle } from "./ToggleMode";
@@ -38,8 +37,8 @@ import { ModeToggle } from "./ToggleMode";
 /* ---------------- ICON MAP ---------------- */
 import { useAuthStore } from "@/store/auth-store";
 import { useCartStore } from "@/store/cart-store";
-import { Grid3X3, Home, Phone } from "lucide-react";
 import axios from "axios";
+import { Grid3X3, Home, Phone } from "lucide-react";
 
 const ICONS = {
     Home,
@@ -71,7 +70,11 @@ export default function Navbar() {
 
     const toggleWishlist = async () => {
         try {
-            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/heart`);
+            const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/heart/like`, {}, {
+                headers: {
+                    authorization: `Bearer ${token}`
+                }
+            });
 
             setLiked(true);
 
@@ -86,9 +89,14 @@ export default function Navbar() {
     useEffect(() => {
         const fetchHearts = async () => {
             try {
-                const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/heart`);
+                const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/heart`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
                 setWishlistCount(data.total);
+                setLiked(data.liked);
             } catch (error) {
                 console.log(error);
             }
@@ -232,26 +240,30 @@ export default function Navbar() {
                     <ModeToggle />
 
                     {/* CART */}
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        disabled={liked}
-                        onClick={toggleWishlist}
-                        className="relative hover:bg-transparent"
-                    >
-                        <Heart
-                            size={20}
-                            className={`transition-colors duration-200 ${liked ? "fill-red-500 text-red-500" : "text-muted-foreground"
-                                }`}
-                        />
+                    {user && (
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            disabled={liked}
+                            onClick={toggleWishlist}
+                            className="relative hover:bg-transparent"
+                        >
+                            <Heart
+                                size={20}
+                                className={`transition-colors duration-200 ${liked ? "fill-red-500 text-red-500" : "text-muted-foreground"
+                                    }`}
+                            />
 
-                        {/* Badge */}
-                        {wishlistCount > 0 && (
-                            <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center">
-                                {wishlistCount}
-                            </span>
-                        )}
-                    </Button>
+                            {/* Badge */}
+                            {wishlistCount > 0 && (
+                                <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 text-white text-[10px] flex items-center justify-center">
+                                    {wishlistCount}
+                                </span>
+                            )}
+                        </Button>
+                    )
+                    }
+
 
                     <Link href={"/cart"}>
                         <Button variant="ghost" size="icon" className="relative">

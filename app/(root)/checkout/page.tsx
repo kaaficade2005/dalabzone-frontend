@@ -28,6 +28,8 @@ export default function CheckoutPage() {
     const [paymentMethod, setPaymentMethod] =
         useState("evc");
 
+
+
     const [Loading, setLoading] = useState(false);
 
     const [formData, setFormData] = useState({
@@ -38,7 +40,7 @@ export default function CheckoutPage() {
         phone: "",
     });
 
-    console.log(user)
+
 
     useEffect(() => {
         setHydrated(true);
@@ -120,9 +122,7 @@ export default function CheckoutPage() {
 
             // CHECK EMPTY CART
             if (cart.length === 0) {
-
                 toast.error("Your cart is empty");
-
                 return;
             }
 
@@ -352,7 +352,7 @@ export default function CheckoutPage() {
                                         }
                                         readOnly
                                         className="mt-1.5 h-12"
-                                        value={`${user?.name}`}
+                                        value={`${user?.first_name + ' ' + user?.last_name}`}
                                         required
                                     />
                                 </div>

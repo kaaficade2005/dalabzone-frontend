@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
 
 import {
     Table,
@@ -12,20 +12,19 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
 import {
-    Eye,
-    Search,
-    RefreshCw,
-    ShoppingBag,
-    User,
     Calendar,
     DollarSign,
+    Eye,
     Package,
+    RefreshCw,
+    ShoppingBag,
+    User
 } from "lucide-react";
 
 import { useAuthStore } from "@/store/auth-store";

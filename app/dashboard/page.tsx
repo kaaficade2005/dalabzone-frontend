@@ -24,6 +24,7 @@ import {
   Folder,
   CalendarDays,
 } from "lucide-react";
+import Loading from "../../components/Loading";
 
 /* =========================
    TYPES FIX
@@ -76,7 +77,7 @@ const DashboardPage = () => {
         `${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/stats`,
         {
           headers: { Authorization: `Bearer ${token}` },
-        }
+        },
       );
 
       setStats(res.data);
@@ -90,7 +91,9 @@ const DashboardPage = () => {
   }, [token]);
 
   if (!stats) {
-    return <div className="p-6">Loading dashboard...</div>;
+    return (
+      <Loading />
+    );
   }
 
   const s = stats.stats;
@@ -138,25 +141,50 @@ const DashboardPage = () => {
 
   return (
     <div className="p-6 space-y-6">
-
       {/* HEADER */}
       <div>
         <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-        <p className="text-muted-foreground">
-          Full system analytics overview
-        </p>
+        <p className="text-muted-foreground">Full system analytics overview</p>
       </div>
 
       {/* KPI CARDS */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
-
-        <StatCard title="Orders" value={s.orders} icon={ShoppingCart} color="bg-blue-100 text-blue-700" />
-        <StatCard title="Users" value={s.users} icon={Users} color="bg-purple-100 text-purple-700" />
-        <StatCard title="Revenue" value={`$${s.revenue}`} icon={DollarSign} color="bg-green-100 text-green-700" />
-        <StatCard title="Products" value={s.products} icon={Package} color="bg-indigo-100 text-indigo-700" />
-        <StatCard title="Customers" value={s.customers} icon={User} color="bg-orange-100 text-orange-700" />
-        <StatCard title="Categories" value={s.categories} icon={Folder} color="bg-pink-100 text-pink-700" />
-
+        <StatCard
+          title="Orders"
+          value={s.orders}
+          icon={ShoppingCart}
+          color="bg-blue-100 text-blue-700"
+        />
+        <StatCard
+          title="Users"
+          value={s.users}
+          icon={Users}
+          color="bg-purple-100 text-purple-700"
+        />
+        <StatCard
+          title="Revenue"
+          value={`$${s.revenue}`}
+          icon={DollarSign}
+          color="bg-green-100 text-green-700"
+        />
+        <StatCard
+          title="Products"
+          value={s.products}
+          icon={Package}
+          color="bg-indigo-100 text-indigo-700"
+        />
+        <StatCard
+          title="Customers"
+          value={s.customers}
+          icon={User}
+          color="bg-orange-100 text-orange-700"
+        />
+        <StatCard
+          title="Categories"
+          value={s.categories}
+          icon={Folder}
+          color="bg-pink-100 text-pink-700"
+        />
       </div>
 
       {/* DAILY ACTIVITY */}
@@ -187,11 +215,17 @@ const DashboardPage = () => {
                     <Badge>{day.orders}</Badge>
                   </TableCell>
 
-                  <TableCell>
-                    ${day.revenue}
-                  </TableCell>
+                  <TableCell>${day.revenue}</TableCell>
                 </TableRow>
               ))}
+
+              {
+                stats.daily?.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-5"> No Daily Order Found</TableCell>
+                  </TableRow>
+                )
+              }
             </TableBody>
           </Table>
         </CardContent>
@@ -219,7 +253,6 @@ const DashboardPage = () => {
             <TableBody>
               {stats.recentOrders?.map((order: Order) => (
                 <TableRow key={order.id}>
-
                   <TableCell>#{order.id}</TableCell>
 
                   <TableCell>{order.user?.name}</TableCell>
@@ -227,7 +260,9 @@ const DashboardPage = () => {
                   <TableCell>
                     <div className="text-sm">
                       <p>{order.user?.email}</p>
-                      <p className="text-muted-foreground">{order.user?.phone}</p>
+                      <p className="text-muted-foreground">
+                        {order.user?.phone}
+                      </p>
                     </div>
                   </TableCell>
 
@@ -241,11 +276,13 @@ const DashboardPage = () => {
 
                   <TableCell>
                     <div className="text-xs space-y-1">
-                      {order.items?.slice(0, 2).map((item: OrderItem, i: number) => (
-                        <p key={i}>
-                          {item.name} x{item.quantity}
-                        </p>
-                      ))}
+                      {order.items
+                        ?.slice(0, 2)
+                        .map((item: OrderItem, i: number) => (
+                          <p key={i}>
+                            {item.name} x{item.quantity}
+                          </p>
+                        ))}
                       {order.items && order.items.length > 2 && (
                         <p className="text-muted-foreground">
                           +{order.items.length - 2} more
@@ -253,14 +290,19 @@ const DashboardPage = () => {
                       )}
                     </div>
                   </TableCell>
-
                 </TableRow>
               ))}
+              {
+                stats.recentOrders?.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-5"> No Recent Order Found</TableCell>
+                  </TableRow>
+                )
+              }
             </TableBody>
           </Table>
         </CardContent>
       </Card>
-
     </div>
   );
 };

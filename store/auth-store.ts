@@ -9,7 +9,7 @@ export type User = {
     id: string;
     name: string;
     email: string;
-    role?: "user" | "admin";
+    role?: "customer" | "admin";
 };
 
 /**
@@ -55,7 +55,9 @@ export const useAuthStore = create<AuthState>()(
                     isAuthenticated: false,
                 });
 
-                toast.success("Successfully logged out");
+                toast.success("You’ve been logged out", {
+                    position: "bottom-right"
+                });
             },
 
             setHasHydrated: (state) => {

@@ -5,15 +5,61 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import axios from "axios";
 import { Mail, MessageCircle, Phone, Send } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
+
+interface ContactData {
+    firstName: string;
+    lastName: string;
+    email: string;
+    subject: string;
+    message: string;
+}
 
 export default function ContactPage() {
     const [loading, setLoading] = useState(false);
+    const [data, setData] = useState<ContactData>({
+        firstName: "",
+        lastName: "",
+        email: "",
+        subject: "",
+        message: "",
+    });
 
-    const handleSend = async () => {
+    const handlechange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setData((prev) => ({
+            ...prev, [name]: value
+        }))
+    };
 
-    }
+    const handleSend = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            setLoading(true)
+
+
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/contact/store-contact`, data);
+            const res = response.data
+
+            toast.success(res.msg)
+
+            setData({
+                firstName: "",
+                lastName: "",
+                email: "",
+                subject: "",
+                message: "",
+            })
+            setLoading(false)
+        } catch (error) {
+            setLoading(false)
+            console.log(error)
+            toast.error("Internal Server Error")
+        }
+    };
 
     return (
         <div className="min-h-screen w-full">
@@ -105,14 +151,14 @@ export default function ContactPage() {
                                         +252 61 9936001
                                     </a>
                                     <br />
-                                    <a
+                                    {/* <a
                                         href="https://wa.me/252611619990"
                                         target="_blank"
                                         rel="noopener noreferrer"
                                         className="text-muted-foreground hover:text-green-500 transition-colors"
                                     >
                                         +252 61 1619990
-                                    </a>
+                                    </a> */}
                                 </div>
                             </div>
                         </div>
@@ -130,7 +176,7 @@ export default function ContactPage() {
 
                     {/* Right Column - Contact Form */}
                     <Card className="p-5">
-                        <form className="space-y-6">
+                        <form className="space-y-6" onSubmit={handleSend}>
                             <div className="grid sm:grid-cols-2 gap-4">
                                 <div className="space-y-2">
                                     <label
@@ -142,8 +188,11 @@ export default function ContactPage() {
                                     <Input
                                         id="first-name"
                                         placeholder="Mohamed"
+                                        name="firstName"
                                         className="h-11"
                                         required
+                                        value={data.firstName}
+                                        onChange={handlechange}
                                     />
                                 </div>
                                 <div className="space-y-2">
@@ -158,6 +207,9 @@ export default function ContactPage() {
                                         placeholder="Abdullahi"
                                         className="h-11"
                                         required
+                                        name="lastName"
+                                        value={data.lastName}
+                                        onChange={handlechange}
                                     />
                                 </div>
                             </div>
@@ -172,9 +224,12 @@ export default function ContactPage() {
                                 <Input
                                     id="email"
                                     type="email"
+                                    name="email"
                                     placeholder="example@gmail.com"
                                     className="h-11"
                                     required
+                                    value={data.email}
+                                    onChange={handlechange}
                                 />
                             </div>
 
@@ -190,6 +245,9 @@ export default function ContactPage() {
                                     placeholder="How can we help you?"
                                     className="h-11"
                                     required
+                                    name="subject"
+                                    value={data.subject}
+                                    onChange={handlechange}
                                 />
                             </div>
 
@@ -202,7 +260,10 @@ export default function ContactPage() {
                                 </label>
                                 <Textarea
                                     id="message"
+                                    name="message"
                                     placeholder="Tell us more about your inquiry..."
+                                    value={data.message}
+                                    onChange={handlechange}
                                     className="min-h-[150px] resize-y"
                                     required
                                 />
@@ -217,7 +278,6 @@ export default function ContactPage() {
                                     <>
                                         <Spinner />
                                         Sending...
-
                                     </>
                                 ) : (
                                     <>

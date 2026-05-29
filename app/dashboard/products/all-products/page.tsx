@@ -34,6 +34,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/Loading";
 
 // Types
 interface Product {
@@ -51,6 +52,7 @@ const Page = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
+
 
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -129,8 +131,11 @@ const Page = () => {
         }
 
     };
-
     const router = useRouter();
+
+
+    if (loading) return <Loading />
+
 
     return (
         <div className="p-4 md:p-8">
